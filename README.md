@@ -6,6 +6,20 @@ Build with:
 npm create vite@latest
 ```
 
+Dev build with:
+
+```terminal
+npm run dev  
+```
+
+Build with:
+
+```terminal
+npm run build
+```
+
+Output is placed in the `dist` folder.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
