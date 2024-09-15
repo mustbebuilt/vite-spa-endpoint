@@ -1,66 +1,75 @@
-import React from 'react';
-class EditStaff extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-          name: props.name,
-          email: props.email
-        };
-    }
+import React, { useState, useEffect } from 'react';
 
-    changeName(ev) {
-        console.info(ev.target.value)
-        this.setState(
-            {name: ev.target.value}
-        )
-      }
+const EditStaff = ({ name: initialName, email: initialEmail, arIndex, updateEvent, deleteEvent }) => {
+  // Set up state for name and email using useState
+  const [name, setName] = useState(initialName);
+  const [email, setEmail] = useState(initialEmail);
 
-     changeEmail(ev) {
-        console.info(ev.target.value)
-        this.setState(
-            {email: ev.target.value}
-        )
-      }
+  // useEffect to update the state when props change
+  useEffect(() => {
+    setName(initialName);
+    setEmail(initialEmail);
+  }, [initialName, initialEmail]);
 
-      updateParent(){
-          this.props.updateEvent(
-            {
-                arIndex: this.props.arIndex,
-                name: this.state.name,
-                email: this.state.email
-            }
-          );
-      }
+  // Function to handle name change
+  const handleNameChange = (ev) => {
+    setName(ev.target.value);
+  };
 
-      deleteParent(){
-        this.props.deleteEvent(
-            {
-                arIndex: this.props.arIndex
-            }
-          );
-      }
-  
-    render() {
-      return (
-        <div className="editStaff">
-            <h2>Edit Staff</h2>
-            <div>
-                <label>Staff Name</label>
-                <input type="text" id="staffName" value={this.state.name} onChange={(ev) => this.changeName(ev) }  />
-            </div>
-            <div>
-                <label>Staff Email</label>
-                <input type="text" id="staffEmail" value={this.state.email} onChange={(ev) => this.changeEmail(ev) }  />
-            </div>
-            <div>
-                <button className="btn edit" onClick={(ev) => this.updateParent() }>Update</button>
-            </div>
-            <div>
-                <button className="btn del" onClick={(ev) => this.deleteParent() }>Delete</button>
-            </div>
-        </div>
-      );
-    }
-  }
+  // Function to handle email change
+  const handleEmailChange = (ev) => {
+    setEmail(ev.target.value);
+  };
 
-  export default EditStaff;
+  // Function to update the parent component
+  const updateParent = () => {
+    updateEvent({
+      arIndex: arIndex,
+      name: name,
+      email: email,
+    });
+  };
+
+  // Function to delete staff in parent component
+  const deleteParent = () => {
+    deleteEvent({
+      arIndex: arIndex,
+    });
+  };
+
+  return (
+    <div className="editStaff">
+      <h2>Edit Staff</h2>
+      <div>
+        <label>Staff Name</label>
+        <input
+          type="text"
+          id="staffName"
+          value={name}
+          onChange={handleNameChange}
+        />
+      </div>
+      <div>
+        <label>Staff Email</label>
+        <input
+          type="text"
+          id="staffEmail"
+          value={email}
+          onChange={handleEmailChange}
+        />
+      </div>
+      <div>
+        <button className="btn edit" onClick={updateParent}>
+          Update
+        </button>
+      </div>
+      <div>
+        <button className="btn del" onClick={deleteParent}>
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default EditStaff;
