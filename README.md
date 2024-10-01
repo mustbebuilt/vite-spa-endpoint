@@ -1,4 +1,4 @@
-## Endpoint
+## Calling RESTful API Endpoints
 
 This repo demonstrates RESTful API calls to a endpoints allowing for the reading, inserting, editing and deleting of a simple set of data.
 
