@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const EditStaff = ({ name: initialName, email: initialEmail, arIndex, updateEvent, deleteEvent }) => {
+const EditStaff = ({ id, name: initialName, email: initialEmail, arIndex, updateEvent, deleteEvent }) => {
   // Set up state for name and email using useState
   const [name, setName] = useState(initialName);
   const [email, setEmail] = useState(initialEmail);
@@ -24,6 +24,7 @@ const EditStaff = ({ name: initialName, email: initialEmail, arIndex, updateEven
   // Function to update the parent component
   const updateParent = () => {
     updateEvent({
+      id: id,
       arIndex: arIndex,
       name: name,
       email: email,
@@ -33,6 +34,7 @@ const EditStaff = ({ name: initialName, email: initialEmail, arIndex, updateEven
   // Function to delete staff in parent component
   const deleteParent = () => {
     deleteEvent({
+      id: id,
       arIndex: arIndex,
     });
   };

@@ -9,44 +9,69 @@ const App = () => {
   // State for current staff number and staff members
   const [currentStaffNum, setCurrentStaffNum] = useState(null);
   const [staffMembers, setStaffMembers] = useState([]);
-
+  const url = 'http://localhost:3000/api';
   // useEffect hook to fetch staff data on component mount
   useEffect(() => {
-    fetch('./data/staff.json')
+    fetch(url)
       .then((resp) => resp.json())
-      .then((myData) => {
-        console.dir(myData);
-        setStaffMembers(myData);
-      });
+      .then((data) => {
+        console.dir(data);
+        setStaffMembers(data);
+      })
+      .catch((error) => console.error('Error fetching staff data:', error));
   }, []);
 
   // Function to update staff member
   const updateStaff = (updateData) => {
-    console.dir(updateData);
-    const updatedStaff = [...staffMembers];
-    updatedStaff[updateData.arIndex] = {
-      name: updateData.name,
-      email: updateData.email,
-    };
-    setStaffMembers(updatedStaff);
-    setCurrentStaffNum(null);
+    const { id, name, email, arIndex } = updateData;
+
+    fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, name, email }),
+    })
+      .then((resp) => resp.json())
+      .then((updatedStaffMember) => {
+        const updatedStaff = [...staffMembers];
+        updatedStaff[arIndex] = updatedStaffMember; // Replace with updated data from API
+        setStaffMembers(updatedStaff);
+        setCurrentStaffNum(null);
+      })
+      .catch((error) => console.error('Error updating staff member:', error));
   };
 
   // Function to add new staff member
   const addStaff = (addData) => {
-    console.dir(addData);
-    const updatedStaff = [...staffMembers, addData];
-    setStaffMembers(updatedStaff);
-    setCurrentStaffNum(null);
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(addData),
+    })
+      .then((resp) => resp.json())
+      .then((newStaffMember) => {
+        const updatedStaff = [...staffMembers, newStaffMember]; // Add new data from API
+        setStaffMembers(updatedStaff);
+        setCurrentStaffNum(null);
+      })
+      .catch((error) => console.error('Error adding staff member:', error));
   };
 
   // Function to delete staff member
-  const deleteStaff = (updateData) => {
-    console.dir(updateData);
-    const updatedStaff = [...staffMembers];
-    updatedStaff.splice(updateData.arIndex, 1);
-    setStaffMembers(updatedStaff);
-    setCurrentStaffNum(null);
+  const deleteStaff = (deleteData) => {
+    const { id, arIndex } = deleteData;
+    console.log('deleteData:', deleteData);
+    fetch(url, {
+      method: 'DELETE',
+      body: JSON.stringify({ id }),
+
+    })
+      .then(() => {
+        const updatedStaff = [...staffMembers];
+        updatedStaff.splice(arIndex, 1); // Remove the deleted item from the local state
+        setStaffMembers(updatedStaff);
+        setCurrentStaffNum(null);
+      })
+      .catch((error) => console.error('Error deleting staff member:', error));
   };
 
   // Conditionally render edit box
@@ -56,6 +81,7 @@ const App = () => {
   } else {
     editBox = (
       <EditStaff
+        id={staffMembers[currentStaffNum].id} // Add the ID for API calls
         name={staffMembers[currentStaffNum].name}
         arIndex={currentStaffNum}
         email={staffMembers[currentStaffNum].email}
@@ -68,7 +94,6 @@ const App = () => {
   // Render staff members list
   const staffList = staffMembers.map((staff, i) => (
     <Staff key={i} name={staff.name} email={staff.email} editEvent={() => setCurrentStaffNum(i)}>
-      Some content
     </Staff>
   ));
 
